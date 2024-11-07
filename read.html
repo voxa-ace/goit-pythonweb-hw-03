@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Read Messages</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h1>Messages</h1>
+    <div id="messages"></div>
+    <a href="/">Back to Home</a>
+
+    <script>
+        async function loadMessages() {
+            try {
+                const response = await fetch('/get_messages');
+                const messages = await response.json();
+
+                const messagesContainer = document.getElementById('messages');
+                messagesContainer.innerHTML = '';
+
+                for (const [timestamp, msg] of Object.entries(messages)) {
+                    const messageElement = document.createElement('div');
+                    messageElement.classList.add('message');
+                    messageElement.innerHTML = `
+                        <p><strong>${msg.username}:</strong> ${msg.message}</p>
+                        <small>${new Date(timestamp).toLocaleString()}</small>
+                    `;
+                    messagesContainer.appendChild(messageElement);
+                }
+            } catch (error) {
+                console.error('Error loading messages:', error);
+            }
+        }
+
+        loadMessages();
+    </script>
+</body>
+</html>
